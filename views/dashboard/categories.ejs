@@ -1,0 +1,79 @@
+<% extend('../layout/dashboard-layout') %>
+<div class="main container-fluid my-4">
+
+
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <% if(hasInfo){ %>
+      <div class="alert alert-warning">
+        <%- message %>
+
+      </div>
+
+      <% } %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>名稱</th>
+            <th>路徑</th>
+            <th width="30"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% for(var prop in category){ %>
+          <tr>
+            <td class="align-middle"><%-  category[prop].name %>
+            </td>
+            <td><input type="text" class="form-control form-control-sm" value="<%- category[prop].path %>
+            "></td>
+            <td class="align-middle">
+              <input type="submit" class="btn btn-outline-danger btn-sm delete" data-id="<%- prop %>" data-name="<%- category[prop].name %>
+              " value="刪除">
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <form action="/dashboard/categories/create" method="POST">
+        <table class="table">
+          <tr>
+            <td class="align-middle">新增</td>
+            <td>
+              <label for="name">分類名稱</label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="請輸入分類名稱">
+            </td>
+            <td colspan="2">
+              <label for="path">路徑</label>
+              <input type="text" class="form-control" id="path" name="path" placeholder="請輸入分類路徑">
+            </td>
+          </tr>
+        </table>
+        <div class="text-right">
+          <button type="submit" class="btn btn-primary">更新資訊</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function () {
+      $('.delete').on('click', function (e) {
+        e.preventDefault();
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+        if (confirm('確認是否刪除' + name)) {
+          $.ajax({
+              url: '/dashboard/categories/delete/' + id,
+              method: 'POST'
+            })
+            .then(function (res) {
+              alert(res);
+              window.location = '/dashboard/categories';
+            })
+        }
+      })
+    })
+  </script>
