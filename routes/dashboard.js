@@ -2,13 +2,16 @@ var express = require("express");
 var router = express.Router();
 var stringtag = require("striptags");
 var moment = require("moment");
+var convertPagination = require('../modules/convetPaginaion')
+
 var database = require("../connect/firebase_admin");
 var categoriesRef = database.ref("categories");
 var articlesRef = database.ref("/articles");
 
 /* 後台 */
 router.get("/archives", function (req, res) {
-  const status = req.query.status || "public";
+  const currentPage = Number.parseInt(req.query.page) || 1;
+  const status = req.query.status || 'public';
   let categories = {};
   categoriesRef.once('value')
     .then(function (snapshot) {
@@ -23,9 +26,12 @@ router.get("/archives", function (req, res) {
         }
       })
       articles.reverse();
+      const data = convertPagination(articles, currentPage);
+
       res.render('dashboard/archives', {
         categories: categories,
-        articles: articles,
+        articles: data.data,
+        page: data.page,
         status: status,
         stringtag: stringtag,
         moment: moment,
