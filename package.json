@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "serve": "node ./bin/www",
+    "postinstall": "npm run build",
+    "start": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
